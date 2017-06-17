@@ -1,28 +1,107 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar } from 'react-native';
-import { Header } from './Components';
+import { View, Text, StatusBar, Picker } from 'react-native';
+import { Header, Input, Hr } from './Components';
+import { Drawer } from './Themes'
 import { RandomColorPicker } from './Utility/Functions';
 
-// const { RandomColorPicker } = Functions;
-
 class App extends Component {
-  render() {
+  constructor() {
+    super();
     const themeColor = RandomColorPicker();
+
+    this.state = {
+      themeColor: RandomColorPicker(),
+      prepareTime: '15',
+      intervalHour: '00',
+      intervalMinute: '00',
+      intervalSecond: '30',
+      restHour: '00',
+      restMinute: '00',
+      restSecond: '30'
+    }
+  }
+
+  render() {
     return (
-      <View>
+      <View style={{ flex: 1 }}>
+        <Drawer bg={ this.state.themeColor } >
+          <Text style={ styles.text }>Prepare Time:</Text>
+          <Picker
+            style={{ marginBottom: 12 }}
+            selectedValue={ this.state.prepareTime }
+            onValueChange={ (val, idx) => this.setState({ prepareTime: val })}>
+            <Picker.Item label='5s' value='5' />
+            <Picker.Item label='10s' value='10' />
+            <Picker.Item label='15s' value='15' />
+            <Picker.Item label='20s' value='20' />
+            <Picker.Item label='25s' value='25' />
+            <Picker.Item label='30s' value='30' />
+          </Picker>
+          <Text style={ styles.text }>Interval Time:</Text>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 24 }}>
+            <Input
+              underline
+              number
+              style={ styles.timeInput }
+              onChangeText={(intervalHour) => this.setState({ intervalHour })}
+              value={ this.state.intervalHour } />
+            <Input
+              underline
+              number
+              style={ styles.timeInput }
+              onChangeText={(intervalMinute) => this.setState({ intervalMinute })}
+              value={ this.state.intervalMinute } />
+            <Input
+              underline
+              number
+              style={ styles.timeInput }
+              onChangeText={(intervalSecond) => this.setState({ intervalSecond })}
+              value={ this.state.intervalSecond } />
+          </View>
+          <Text style={ styles.text }>Rest Time:</Text>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            <Input
+              underline
+              number
+              style={ styles.timeInput }
+              onChangeText={(restHour) => this.setState({ restHour })}
+              value={ this.state.restHour } />
+            <Input
+              underline
+              number
+              style={ styles.timeInput }
+              onChangeText={(restMinute) => this.setState({ restMinute })}
+              value={ this.state.restMinute } />
+            <Input
+              underline
+              number
+              style={ styles.timeInput }
+              onChangeText={(restSecond) => this.setState({ restSecond })}
+              value={ this.state.restSecond } />
+          </View>
+        </Drawer>
         <StatusBar
-           backgroundColor={ themeColor }
+           backgroundColor={ this.state.themeColor }
            barStyle={ 'light-content' }
          />
         <Header
-          backgroundColor={ themeColor }/>
+          backgroundColor={ this.state.themeColor }
+          onPress={ () => console.log('afasad') }/>
       </View>
     )
   }
 }
 
 const styles = {
-
+  text: {
+    color: '#fff',
+    fontSize: 18,
+  },
+  timeInput: {
+    height: 40,
+    width: 40,
+    textAlign: 'center'
+  }
 }
 
 export default App;
