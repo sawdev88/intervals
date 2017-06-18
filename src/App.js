@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, StatusBar, Picker } from 'react-native';
-import { Header, Input, Hr, Button } from './Components';
+import { Header, Input, Hr, Button, Counter } from './Components';
 import { Drawer } from './Themes'
 import { RandomColorPicker } from './Utility/Functions';
 
@@ -18,6 +18,7 @@ class App extends Component {
       restHour: '00',
       restMinute: '00',
       restSecond: '30',
+      roundCount: 3,
       currentTitle: 'Prepare',
       currentTime: 0
     }
@@ -44,12 +45,11 @@ class App extends Component {
 
   componentDidMount() {
     this.setState({ currentTime: this.state.prepareTime })
-    this.countDown(this.state.prepareTime)
   }
 
   render() {
     return (
-      <View onPress={ () => console.log('ya')} style={{ flex: 1 }}>
+      <View style={{ flex: 1 }}>
         <Drawer
           bg={ this.state.themeColor }
           width={ this.state.drawerShowing } >
@@ -107,6 +107,12 @@ class App extends Component {
               onChangeText={(restSecond) => this.setState({ restSecond })}
               value={ this.state.restSecond } />
           </View>
+          <Text style={ styles.text }>Rounds:</Text>
+          <Counter
+            text={ this.state.roundCount }
+            minus={ () => this.setState({ roundCount: (this.state.roundCount - 1) }) }
+            plus={ () => this.setState({ roundCount: (this.state.roundCount + 1) }) }
+          />
           <Button onPress={ () => this.setState({ drawerShowing: false }) } margin title={ 'Close' } color={ 'white' }/>
           <Button
             onPress={ () => this.resetToInitialState() }
@@ -122,8 +128,15 @@ class App extends Component {
           backgroundColor={ this.state.themeColor }
           onPress={ () => this.setState({ drawerShowing: true })}/>
 
-        <Text>{ this.state.currentTitle }</Text>
-        <Text>{ this.state.currentTime }</Text>
+        <View style={{ padding: 32 }}>
+          <Text>{ this.state.currentTitle }</Text>
+          <Text style={{ fontSize: 60 }}>{ this.state.currentTime }</Text>
+
+          <Button
+            title={ 'Start' }
+            color={ this.state.themeColor }
+            onPress={ () => this.countDown(this.state.prepareTime) }/>
+        </View>
       </View>
     )
   }
