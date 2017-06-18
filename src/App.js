@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, StatusBar, Picker } from 'react-native';
-import { Header, Input, Hr } from './Components';
+import { Header, Input, Hr, Button } from './Components';
 import { Drawer } from './Themes'
 import { RandomColorPicker } from './Utility/Functions';
 
@@ -17,14 +17,42 @@ class App extends Component {
       intervalSecond: '30',
       restHour: '00',
       restMinute: '00',
-      restSecond: '30'
+      restSecond: '30',
+      currentTitle: 'Prepare',
+      currentTime: 0
     }
+
+    this.baseState = this.state;
+  }
+
+  resetToInitialState() {
+    this.state=( this.baseState )
+  }
+
+  countDown(val) {
+    var _this = this;
+    let count = 0;
+    let initialNumber = +val;
+    var countdown = 0;
+
+    var timer = setInterval(function () {
+      countdown = initialNumber -= 1
+      _this.setState({ currentTime: countdown })
+      if (countdown === 0) clearInterval(timer);
+    }, 1000)
+  }
+
+  componentDidMount() {
+    this.setState({ currentTime: this.state.prepareTime })
+    this.countDown(this.state.prepareTime)
   }
 
   render() {
     return (
-      <View style={{ flex: 1 }}>
-        <Drawer bg={ this.state.themeColor } >
+      <View onPress={ () => console.log('ya')} style={{ flex: 1 }}>
+        <Drawer
+          bg={ this.state.themeColor }
+          width={ this.state.drawerShowing } >
           <Text style={ styles.text }>Prepare Time:</Text>
           <Picker
             style={{ marginBottom: 12 }}
@@ -79,6 +107,12 @@ class App extends Component {
               onChangeText={(restSecond) => this.setState({ restSecond })}
               value={ this.state.restSecond } />
           </View>
+          <Button onPress={ () => this.setState({ drawerShowing: false }) } margin title={ 'Close' } color={ 'white' }/>
+          <Button
+            onPress={ () => this.resetToInitialState() }
+            margin
+            title={ 'Reset' }
+            color={ '#fff' } />
         </Drawer>
         <StatusBar
            backgroundColor={ this.state.themeColor }
@@ -86,7 +120,10 @@ class App extends Component {
          />
         <Header
           backgroundColor={ this.state.themeColor }
-          onPress={ () => console.log('afasad') }/>
+          onPress={ () => this.setState({ drawerShowing: true })}/>
+
+        <Text>{ this.state.currentTitle }</Text>
+        <Text>{ this.state.currentTime }</Text>
       </View>
     )
   }

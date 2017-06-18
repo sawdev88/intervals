@@ -1,14 +1,18 @@
 import React from 'react';
-import { Text, View, Dimensions, Picker } from 'react-native';
+import { Text, ScrollView } from 'react-native';
 import { Hr } from '../Components';
 
 const Drawer = (props) => {
   return (
-    <View style={ [styles.container, {backgroundColor: props.bg}] }>
+    <ScrollView
+        {...props}
+        style={ [styles.container,
+           props.width ? {width: 300, padding: 32} : {width: 0, padding: 0},
+           {backgroundColor: props.bg}] }>
       <Text style={{ color: '#fff', fontSize: 24, marginBottom: 6 }}>Options</Text>
       <Hr />
       {props.children}
-    </View>
+    </ScrollView>
   )
 }
 
@@ -18,9 +22,9 @@ const styles = {
     top: 0,
     bottom: 0,
     right: 0,
-    width: (Dimensions.get('window').width - 120),
     zIndex: 11,
-    padding: 32,
+    padding: 0,
+    overflow: 'hidden'
   },
   text: {
     color: '#fff',
