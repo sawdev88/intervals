@@ -27,6 +27,7 @@ class App extends Component {
   }
 
   resetToInitialState() {
+    console.log(this.baseState);
     this.state=( this.baseState )
   }
 
@@ -36,7 +37,7 @@ class App extends Component {
     let initialNumber = +val;
     var countdown = 0;
 
-    var timer = setInterval(function () {
+    let timer = setInterval(function () {
       countdown = initialNumber -= 1
       _this.setState({ currentTime: countdown })
       if (countdown === 0) clearInterval(timer);
@@ -51,6 +52,7 @@ class App extends Component {
     return (
       <View style={{ flex: 1 }}>
         <Drawer
+          closeMenu={ () => this.setState({ drawerShowing: false }) }
           bg={ this.state.themeColor }
           width={ this.state.drawerShowing } >
           <Text style={ styles.text }>Prepare Time:</Text>
@@ -113,12 +115,13 @@ class App extends Component {
             minus={ () => this.setState({ roundCount: (this.state.roundCount - 1) }) }
             plus={ () => this.setState({ roundCount: (this.state.roundCount + 1) }) }
           />
-          <Button onPress={ () => this.setState({ drawerShowing: false }) } margin title={ 'Close' } color={ 'white' }/>
+          <Button onPress={ () => this.setState({ drawerShowing: false, currentTime: this.state.prepareTime }) } margin title={ 'Close' } color={ 'white' }/>
           <Button
             onPress={ () => this.resetToInitialState() }
             margin
             title={ 'Reset' }
             color={ '#fff' } />
+            <View style={{ height: 64 }} />
         </Drawer>
         <StatusBar
            backgroundColor={ this.state.themeColor }
