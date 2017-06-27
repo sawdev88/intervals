@@ -4,6 +4,8 @@ import { Header, Input, Hr, Button, Counter } from './Components';
 import { Drawer } from './Themes'
 import { RandomColorPicker } from './Utility/Functions';
 
+var round = 0;
+
 class App extends Component {
   constructor() {
     super();
@@ -11,13 +13,13 @@ class App extends Component {
 
     this.state = {
       themeColor: RandomColorPicker(),
-      prepareTime: '15',
+      prepareTime: '3',
       intervalHour: '00',
       intervalMinute: '00',
-      intervalSecond: '30',
+      intervalSecond: '03',
       restHour: '00',
       restMinute: '00',
-      restSecond: '30',
+      restSecond: '03',
       roundCount: 3,
       currentTitle: 'Prepare',
       currentTime: 0
@@ -26,8 +28,11 @@ class App extends Component {
     this.baseState = this.state;
   }
 
+  componentDidMount() {
+    this.setState({ currentTime: this.state.prepareTime })
+  }
+
   resetToInitialState() {
-    console.log(this.baseState);
     this.state=( this.baseState )
   }
 
@@ -35,7 +40,7 @@ class App extends Component {
     if (isInterval) {
       let minutes = +this.state.intervalMinute * 60;
       let seconds = +this.state.intervalSecond;
-      return minutes + seconds;
+      return minutes + seconds + 1;
     } else {
       let minutes = +this.state.restMinute * 60;
       let seconds = +this.state.restSecond;
@@ -43,41 +48,45 @@ class App extends Component {
     }
   }
 
-  intervalTimer(rounds, rest) {
+  setTimer(val) {
+    let _this = this;
+    let currentTime = +val;
+
+    let timer = setInterval(function () {
+      let countdown = currentTime -= 1;
+      _this.setState({ currentTime: countdown })
+
+      if (countdown === 0) {
+        clearInterval(timer);
+        if (round < _this.state.roundCount) { _this.intervalTimer(); }
+      }
+    }, 1000);
+
+  }
+
+  initialTimer() {
+    this.setTimer(this.state.prepareTime)
+  }
+
+  intervalTimer() {
     let _this = this;
     let currentTime = this.getIntervalTime(true);
 
     let timer = setInterval(function () {
       countdown = currentTime -= 1
       _this.setState({ currentTime, currentTitle: 'Action' })
-      if (countdown === 0) {
+      if (countdown < 0) {
         clearInterval(timer);
         let restTime = _this.getIntervalTime();
-        _this.setState({ currentTime: restTime, currentTitle: 'Rest' })
+        console.log(round);
+        _this.setState({ currentTime: restTime, currentTitle: 'Rest' });
+        _this.setTimer(_this.state.currentTime);
+        round++;
       }
     }, 1000)
-  }
-
-  countDown(val) {
-    let _this = this;
-    let initialNumber = +val;
-
-    let timer = setInterval(function () {
-      countdown = initialNumber -= 1
-      _this.setState({ currentTime: countdown })
-      if (countdown === 0) {
-        clearInterval(timer);
-        _this.intervalTimer();
-      }
-    }, 1000)
-  }
-
-  componentDidMount() {
-    this.setState({ currentTime: this.state.prepareTime })
   }
 
   render() {
-    console.log(this.getIntervalTime());
     return (
       <View style={{ flex: 1 }}>
         <Drawer
@@ -166,7 +175,7 @@ class App extends Component {
           <Button
             title={ 'Start' }
             color={ this.state.themeColor }
-            onPress={ () => this.countDown(this.state.prepareTime) }/>
+            onPress={ () => this.initialTimer() }/>
         </View>
       </View>
     )
