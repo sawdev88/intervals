@@ -28,7 +28,8 @@ const styles = {
   },
   menuContainer: {
     paddingHorizontal: 32,
-    paddingVertical: 16
+    paddingVertical: 16,
+    marginBottom: 64
   },
   text: {
     color: '#fff',

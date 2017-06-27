@@ -31,16 +31,44 @@ class App extends Component {
     this.state=( this.baseState )
   }
 
+  getIntervalTime(isInterval) {
+    if (isInterval) {
+      let minutes = +this.state.intervalMinute * 60;
+      let seconds = +this.state.intervalSecond;
+      return minutes + seconds;
+    } else {
+      let minutes = +this.state.restMinute * 60;
+      let seconds = +this.state.restSecond;
+      return minutes + seconds;
+    }
+  }
+
+  intervalTimer(rounds, rest) {
+    let _this = this;
+    let currentTime = this.getIntervalTime(true);
+
+    let timer = setInterval(function () {
+      countdown = currentTime -= 1
+      _this.setState({ currentTime, currentTitle: 'Action' })
+      if (countdown === 0) {
+        clearInterval(timer);
+        let restTime = _this.getIntervalTime();
+        _this.setState({ currentTime: restTime, currentTitle: 'Rest' })
+      }
+    }, 1000)
+  }
+
   countDown(val) {
-    var _this = this;
-    let count = 0;
+    let _this = this;
     let initialNumber = +val;
-    var countdown = 0;
 
     let timer = setInterval(function () {
       countdown = initialNumber -= 1
       _this.setState({ currentTime: countdown })
-      if (countdown === 0) clearInterval(timer);
+      if (countdown === 0) {
+        clearInterval(timer);
+        _this.intervalTimer();
+      }
     }, 1000)
   }
 
@@ -49,10 +77,10 @@ class App extends Component {
   }
 
   render() {
+    console.log(this.getIntervalTime());
     return (
       <View style={{ flex: 1 }}>
         <Drawer
-          closeMenu={ () => this.setState({ drawerShowing: false }) }
           bg={ this.state.themeColor }
           width={ this.state.drawerShowing } >
           <Text style={ styles.text }>Prepare Time:</Text>
