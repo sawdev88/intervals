@@ -1,5 +1,5 @@
-import Functions from './Functions';
+import Helpers from './Helpers';
 
 export {
-  Functions
+  Helpers
 }

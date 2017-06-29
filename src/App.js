@@ -2,17 +2,17 @@ import React, { Component } from 'react';
 import { View, Text, StatusBar, Picker } from 'react-native';
 import { Header, Input, Hr, Button, Counter } from './Components';
 import { Drawer } from './Themes'
-import { RandomColorPicker } from './Utility/Functions';
+import { randomColorPicker, slideIn } from './Utility/Helpers';
 
 var round = 0;
 
 class App extends Component {
   constructor() {
     super();
-    const themeColor = RandomColorPicker();
+    const themeColor = randomColorPicker();
 
     this.state = {
-      themeColor: RandomColorPicker(),
+      themeColor: randomColorPicker(),
       prepareTime: '3',
       intervalHour: '00',
       intervalMinute: '00',
@@ -104,14 +104,8 @@ class App extends Component {
             <Picker.Item label='25s' value='25' />
             <Picker.Item label='30s' value='30' />
           </Picker>
-          <Text style={ styles.text }>Interval Time:</Text>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 24 }}>
-            <Input
-              underline
-              number
-              style={ styles.timeInput }
-              onChangeText={(intervalHour) => this.setState({ intervalHour })}
-              value={ this.state.intervalHour } />
+            <Text style={ styles.text }>Interval Time:</Text>
             <Input
               underline
               number
@@ -125,14 +119,8 @@ class App extends Component {
               onChangeText={(intervalSecond) => this.setState({ intervalSecond })}
               value={ this.state.intervalSecond } />
           </View>
-          <Text style={ styles.text }>Rest Time:</Text>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <Input
-              underline
-              number
-              style={ styles.timeInput }
-              onChangeText={(restHour) => this.setState({ restHour })}
-              value={ this.state.restHour } />
+            <Text style={ styles.text }>Rest Time:</Text>
             <Input
               underline
               number
@@ -146,12 +134,14 @@ class App extends Component {
               onChangeText={(restSecond) => this.setState({ restSecond })}
               value={ this.state.restSecond } />
           </View>
-          <Text style={ styles.text }>Rounds:</Text>
-          <Counter
-            text={ this.state.roundCount }
-            minus={ () => this.setState({ roundCount: (this.state.roundCount - 1) }) }
-            plus={ () => this.setState({ roundCount: (this.state.roundCount + 1) }) }
-          />
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            <Text style={ styles.text }>Rounds:</Text>
+            <Counter
+              text={ this.state.roundCount }
+              minus={ () => this.setState({ roundCount: (this.state.roundCount - 1) }) }
+              plus={ () => this.setState({ roundCount: (this.state.roundCount + 1) }) }
+            />
+          </View>
           <Button onPress={ () => this.setState({ drawerShowing: false, currentTime: this.state.prepareTime }) } margin title={ 'Close' } color={ 'white' }/>
           <Button
             onPress={ () => this.resetToInitialState() }
@@ -166,7 +156,7 @@ class App extends Component {
          />
         <Header
           backgroundColor={ this.state.themeColor }
-          onPress={ () => this.setState({ drawerShowing: true })}/>
+          onPress={ () => this.setState({ drawerShowing: !this.state.drawerShowing, currentTime: this.state.prepareTime })}/>
 
         <View style={{ padding: 32 }}>
           <Text>{ this.state.currentTitle }</Text>
