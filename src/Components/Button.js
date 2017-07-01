@@ -5,7 +5,7 @@ const Button = (props) => {
   return (
     <TouchableOpacity
       {...props}
-      style={ [styles.container, {borderColor: props.color}, props.margin ? { marginTop: 24 } : null] }>
+      style={ [styles.container, {borderColor: props.color}, props.margin ? { marginTop: 24 } : null, props.style ] }>
       <Text style={{ color: props.color, fontSize: 16 }}>{ props.title }</Text>
     </TouchableOpacity>
   )

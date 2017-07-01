@@ -4,8 +4,6 @@ import { Header, Input, Hr, Button, Counter } from './Components';
 import { Drawer } from './Themes'
 import { randomColorPicker, slideIn } from './Utility/Helpers';
 
-var round = 0;
-
 class App extends Component {
   constructor() {
     super();
@@ -21,6 +19,7 @@ class App extends Component {
       restMinute: '00',
       restSecond: '03',
       roundCount: 3,
+      currentRound: 0,
       currentTitle: 'Prepare',
       currentTime: 0
     }
@@ -58,7 +57,8 @@ class App extends Component {
 
       if (countdown === 0) {
         clearInterval(timer);
-        if (round < _this.state.roundCount) { _this.intervalTimer(); }
+        if (_this.state.currentRound < _this.state.roundCount) { _this.intervalTimer(); }
+        _this.setState({ currentRound: (_this.state.currentRound + 1) })
       }
     }, 1000);
 
@@ -78,12 +78,24 @@ class App extends Component {
       if (countdown < 0) {
         clearInterval(timer);
         let restTime = _this.getIntervalTime();
-        console.log(round);
         _this.setState({ currentTime: restTime, currentTitle: 'Rest' });
         _this.setTimer(_this.state.currentTime);
-        round++;
       }
     }, 1000)
+  }
+
+  displayRounds() {
+    if(this.state.currentRound === 0) {
+      return '--';
+    } else {
+      let count = '';
+      if( this.state.currentRound >= this.state.roundCount ) {
+         count = this.state.roundCount + '/' + this.state.roundCount;
+      } else {
+        count = this.state.currentRound + '/' + this.state.roundCount
+      }
+      return count;
+    }
   }
 
   render() {
@@ -158,11 +170,17 @@ class App extends Component {
           backgroundColor={ this.state.themeColor }
           onPress={ () => this.setState({ drawerShowing: !this.state.drawerShowing, currentTime: this.state.prepareTime })}/>
 
-        <View style={{ padding: 32 }}>
+        <View style={{ padding: 32, flex: 1 }}>
           <Text>{ this.state.currentTitle }</Text>
-          <Text style={{ fontSize: 60 }}>{ this.state.currentTime }</Text>
+          <Text style={ styles.largeText }>{ this.state.currentTime }</Text>
+
+          <View style={ styles.row }>
+            <Text style={ styles.mediumText }>Round</Text>
+            <Text style={ [styles.mediumText, { marginLeft: 24 }] }>{this.displayRounds()}</Text>
+          </View>
 
           <Button
+            style={ styles.startButton }
             title={ 'Start' }
             color={ this.state.themeColor }
             onPress={ () => this.initialTimer() }/>
@@ -181,6 +199,22 @@ const styles = {
     height: 40,
     width: 40,
     textAlign: 'center'
+  },
+  startButton: {
+    position: 'absolute',
+    bottom: 32,
+    left: 32,
+    right: 32
+  },
+  row: {
+    flexDirection: 'row',
+    flexWrap: 'wrap'
+  },
+  largeText: {
+    fontSize: 64
+  },
+  mediumText: {
+    fontSize: 48
   }
 }
 
