@@ -12,9 +12,17 @@ const Input = (props) => {
           maxLength={ 2 } /> :
           <TextInput {...props} />
       }
-      {props.underline ? <Hr /> : null}
+      <View style={props.underline ? style.border : null} />
     </View>
   )
+}
+
+const style = {
+  border: {
+    borderBottomColor: '#fff',
+    borderBottomWidth: 2,
+    marginHorizontal: 8
+  }
 }
 
 export default Input;
